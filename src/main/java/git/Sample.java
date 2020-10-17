@@ -27,5 +27,9 @@ public class Sample {
 
   public void print967(int i) {
     System.out.println(i);
-  } 
+  }
+
+  public void print755(int i) {
+    System.out.println(i);
+  }
 }
