@@ -32,4 +32,8 @@ public class Sample {
   public void print755(int i) {
     System.out.println(i);
   }
+
+  public void print23(int i) {
+    System.out.println(i);
+  }
 }
