@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -12,26 +13,33 @@ import com.google.googlejavaformat.java.FormatterException;
 
 public class FileHelper {
 
-	public static File openFile(String fileName) {
+	public static File openOrCreateNewFile(String fileName) {
 		File file = null;
 		String fileSeparator = System.getProperty("file.separator");
-		File workspace = new File(System.getProperty("user.dir"));
-		// absolute file name with path
-		String absoluteFilePath = workspace + fileSeparator + "src" + fileSeparator + "main" + fileSeparator + "java"
-				+ fileSeparator + "git" + fileSeparator + fileName;
-		file = new File(absoluteFilePath);
+		String packageName = FileHelper.class.getPackage().getName();
+		Path resourceDirectory = Paths.get("src", "main", "java", packageName);
+		String pathName = resourceDirectory.toString();
+		file = new File(pathName + fileSeparator + fileName);
 		try {
-			file.createNewFile();
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			if (file.createNewFile()) {
+				Formatter formatter = new Formatter();
+				StringBuilder classPattern = new StringBuilder();
+				classPattern.append("package " + packageName + ";");
+				String name = fileName.split("\\.")[0];
+				classPattern.append("public class " + name + "{}");
+				FileOutputStream fileOut = new FileOutputStream(file);
+				String code = formatter.formatSource(classPattern.toString());
+				fileOut.write(code.getBytes());
+				fileOut.close();
+				System.out.println(fileName + " file is created.");
+			}
+		} catch (FormatterException | IOException e) {
 			e.printStackTrace();
 		}
 		return file;
 	}
 
-	public static void writeToFile(File file, String code) {
-
+	public static void appendToFile(File file, String code) {
 		try {
 			StringBuilder sb = readFileLineByLineUsingFiles(file);
 			int index = sb.lastIndexOf("}");
@@ -46,9 +54,7 @@ public class FileHelper {
 			fileOut.write(newCode.getBytes());
 			fileOut.close();
 
-		} catch (IOException ex) {
-			System.out.println(ex);
-		} catch (FormatterException ex) {
+		} catch (IOException | FormatterException ex) {
 			System.out.println(ex);
 		}
 	}

@@ -12,18 +12,18 @@ public class MainProgram {
 
 	public static void main(String[] args)
 			throws IOException, NoFilepatternException, GitAPIException, URISyntaxException {
-		File file = FileHelper.openFile(FILE_NAME);
+		File file = FileHelper.openOrCreateNewFile(FILE_NAME);
 		int i = (int) (Math.random() * 1000);
 		String code = "public void print" + i + "(int i){System.out.println(i);}";
 		// add code to Simple.java class
-		FileHelper.writeToFile(file, code);		
+		FileHelper.appendToFile(file, code);
 		GitHelper.gitCommit();
 		System.out.println("remote adding");
-		GitHelper.gitAdd();		
+		GitHelper.gitAdd();
 		System.out.println("pushing");
 		GitHelper.gitPush();
 		System.out.println("finish");
-		
+
 	}
 
 }
