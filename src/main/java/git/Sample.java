@@ -20,4 +20,8 @@ public class Sample {
   public void print536(int i) {
     System.out.println(i);
   }
+
+  public void print442(int i) {
+    System.out.println(i);
+  }
 }
